@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { createCipheriv, createDecipheriv } from 'crypto';
 import { EncrypterProviderInterface } from './interface/Encrypter.provider';
 import { EncrypterDecryptDTO, EncrypterEncryptDTO } from './dto/Encrypter.provider.dto';
 
@@ -41,16 +41,4 @@ export class EncrypterProvider implements EncrypterProviderInterface {
   
       return decrypted.toString();
     }
-
-    public generateIV(): string {
-      let iv = randomBytes(16);
-
-      return iv.toString('hex');
-    }
-
-    public generateSecret(): string {
-      let secret = randomBytes(32);
-
-      return secret.toString('hex');
-  }
 }
