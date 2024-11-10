@@ -5,4 +5,6 @@ import {
   export interface EncrypterProviderInterface {
     encrypt(data: EncrypterEncryptDTO): string;
     decrypt(data: EncrypterDecryptDTO): string;
+    generateIV(): string;
+    generateSecret(): string;
   }  
