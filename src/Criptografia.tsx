@@ -1,9 +1,13 @@
-import { useState } from 'react';
+'use client'
+
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { generateKeys } from './api/endpoints/keys/GenerateKeys.endpoint';
 
 function Criptografia() {
   const [input1, setInput1] = useState('');
   const [input2, setInput2] = useState('');
+  const [keys, setKeys] = useState<{iv: string, secret: string} | null>(null);
 
   // Estado para a matriz (inicialmente em branco)
   const [matrix, setMatrix] = useState([
@@ -11,12 +15,46 @@ function Criptografia() {
     ['', '', '']
   ]);
 
+  useEffect(() => {
+    const fetchKeys = async () => {
+      if (!keys) {
+        const response = await generateKeys()
+
+        if ('statusCode' in response) {
+          console.error('Erro ao gerar chaves:', response.message);
+          return;
+        }
+
+        setKeys(response);
+        setInput1(response.iv);
+        setInput2(response.secret);
+      }
+    };
+
+    fetchKeys();
+  }, []);
+
   // Função para lidar com mudanças nos inputs da matriz
   const handleInputChange = (rowIndex: number, cellIndex: number, value: string) => {
     const updatedMatrix = [...matrix];
     updatedMatrix[rowIndex][cellIndex] = value;
     setMatrix(updatedMatrix);
+
+    console.log('Matriz atualizada:', updatedMatrix);
   };
+
+  const handleGenerateKeys = async () => {
+    const response = await generateKeys()
+
+    if ('statusCode' in response) {
+      console.error('Erro ao gerar chaves:', response.message);
+      return;
+    }
+
+    setKeys(response);
+    setInput1(response.iv);
+    setInput2(response.secret);
+  }
 
   const handleButtonClick = (buttonNumber: number) => {
     if (buttonNumber === 1) {
@@ -100,6 +138,8 @@ function Criptografia() {
               marginLeft: '50%',
               width:'13.5%'
             }}
+
+            onClick={async () => handleGenerateKeys()}
           >
             GERAR
           </button>
