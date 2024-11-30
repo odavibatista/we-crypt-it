@@ -3,16 +3,18 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { generateKeys } from './api/endpoints/keys/GenerateKeys.endpoint';
+import { encryptMatrix } from './api/endpoints/matrix/EncryptMatrix.endpoint';
 
 function Criptografia() {
   const [input1, setInput1] = useState('');
   const [input2, setInput2] = useState('');
   const [keys, setKeys] = useState<{iv: string, secret: string} | null>(null);
+  const [encryptionResult, setEncryptionResult] = useState<string | null>(null);
 
   // Estado para a matriz (inicialmente em branco)
   const [matrix, setMatrix] = useState([
-    ['', '', ''],
-    ['', '', '']
+    ['0', '0', '0'],
+    ['0', '0', '0']
   ]);
 
   useEffect(() => {
@@ -54,6 +56,21 @@ function Criptografia() {
     setKeys(response);
     setInput1(response.iv);
     setInput2(response.secret);
+  }
+
+  const handleEncryptMatrix = async () => {
+    const encryptedMatrix = await encryptMatrix({
+      iv: input1,
+      secret: input2,
+      matrix: JSON.stringify(matrix)
+    })
+
+    if ('statusCode' in encryptedMatrix) {
+      alert(`Erro ao criptografar matriz: ${encryptedMatrix.message}`);
+      return;
+    }
+
+    setEncryptionResult(encryptedMatrix.encryptedMatrix);
   }
 
   const handleButtonClick = (buttonNumber: number) => {
@@ -168,6 +185,7 @@ function Criptografia() {
               marginLeft: '50%',
               marginTop: '5%'
             }}
+            onClick={async () => handleEncryptMatrix()}
           >
             CRIPTOGRAFAR
           </button>
@@ -181,6 +199,7 @@ function Criptografia() {
   <input
   type="text"
   placeholder="ASNSJDNAJNDA45454AX"
+  value={encryptionResult || ''}
   style={{
     padding: '10px',
     width: '350px',
