@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import { decryptMatrix } from './api/endpoints/matrix/DecryptMatrix.endpoint';
 
 function Descriptografia() {
-  const [input1, setInput1] = useState('');
-  const [input2, setInput2] = useState('');
-  const [input3, setInput3] = useState('');
+  const [ivKey, setIvKey] = useState('');
+  const [secretKey, setSecretKey] = useState('');
+  const [encryptedMatrix, setEncryptedMatrix] = useState('');
 
   // Estado para a matriz (inicialmente em branco)
   const [matrix, setMatrix] = useState([
@@ -32,9 +32,9 @@ function Descriptografia() {
 
   const handleDecryptMatrix = async () => {
     const decryptedMatrix = await decryptMatrix({
-      iv: input1,
-      secret: input2,
-      encryptedMatrix: input3
+      iv: ivKey,
+      secret: secretKey,
+      encryptedMatrix: encryptedMatrix
     })
 
     if ('statusCode' in decryptedMatrix) {
@@ -104,8 +104,8 @@ function Descriptografia() {
         }}>
           <input
             type="text"
-            value={input1}
-            onChange={(e) => setInput1(e.target.value)}
+            value={ivKey}
+            onChange={(e) => setIvKey(e.target.value)}
             placeholder="INPUT 01 - CHAVE IV"
             style={{ padding: '10px', width: '200px', margin:'0 10px 0 10%', height:'20px'}}
           />
@@ -132,8 +132,8 @@ function Descriptografia() {
         }}>
           <input
             type="text"
-            value={input2}
-            onChange={(e) => setInput2(e.target.value)}
+            value={secretKey}
+            onChange={(e) => setSecretKey(e.target.value)}
             placeholder="INPUT 02 - CHAVE SECRETA"
             style={{ padding: '10px', width: '200px', marginRight: '10px', marginLeft: '10%' }}
           />
@@ -145,7 +145,7 @@ function Descriptografia() {
   <label style={{ marginBottom: '5px', display: 'block', margin:'20px 0 15px 65%',width:'25%', }}>OUTPUT - MATRIZ DESCRIPTOGRAFADA</label>
   <label style={{  display: 'block', margin:'-25px 0 0px 8%',width:'35%' }}>INPUT - ÁREA DE INSERIR A MATRIZ CRIPTOGRAFADA</label>
   <input
-    onChange={(e) => setInput3(e.target.value)}
+    onChange={(e) => setEncryptedMatrix(e.target.value)}
     type="text"
     placeholder="RERE56ER62D8A4ED8A1ED5F"
     style={{
