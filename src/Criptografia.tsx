@@ -41,8 +41,6 @@ function Criptografia() {
     const updatedMatrix = [...matrix];
     updatedMatrix[rowIndex][cellIndex] = value;
     setMatrix(updatedMatrix);
-
-    console.log('Matriz atualizada:', updatedMatrix);
   };
 
   const handleGenerateKeys = async () => {
@@ -64,6 +62,10 @@ function Criptografia() {
       secret: input2,
       matrix: JSON.stringify(matrix)
     })
+
+    console.log(`Matrix cripto: ${JSON.stringify(matrix)}`);
+    console.log(`IV: ${input1}`);
+    console.log(`Secret: ${input2}`);
 
     if ('statusCode' in encryptedMatrix) {
       alert(`Erro ao criptografar matriz: ${encryptedMatrix.message}`);

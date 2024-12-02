@@ -1,9 +1,13 @@
+'use client'
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { decryptMatrix } from './api/endpoints/matrix/DecryptMatrix.endpoint';
 
 function Descriptografia() {
   const [input1, setInput1] = useState('');
   const [input2, setInput2] = useState('');
+  const [input3, setInput3] = useState('');
 
   // Estado para a matriz (inicialmente em branco)
   const [matrix, setMatrix] = useState([
@@ -24,6 +28,21 @@ function Descriptografia() {
     } else {
       console.log('Botão 2 clicado');
     }
+  }
+
+  const handleDecryptMatrix = async () => {
+    const decryptedMatrix = await decryptMatrix({
+      iv: input1,
+      secret: input2,
+      encryptedMatrix: input3
+    })
+
+    if ('statusCode' in decryptedMatrix) {
+      alert(`Erro ao descriptografar matriz: ${decryptedMatrix.message}`);
+      return;
+    }
+
+    setMatrix(eval(decryptedMatrix.decryptedMatrix));
   }
 
 
@@ -99,9 +118,8 @@ function Descriptografia() {
               borderRadius: '5px',
               cursor: 'pointer',
               margin: '60px 0 0 50%',
-              
-
             }}
+            onClick={async () => handleDecryptMatrix()}
           >
             DECODIFICAR
           </button>
@@ -127,6 +145,7 @@ function Descriptografia() {
   <label style={{ marginBottom: '5px', display: 'block', margin:'20px 0 15px 65%',width:'25%', }}>OUTPUT - MATRIZ DESCRIPTOGRAFADA</label>
   <label style={{  display: 'block', margin:'-25px 0 0px 8%',width:'35%' }}>INPUT - ÁREA DE INSERIR A MATRIZ CRIPTOGRAFADA</label>
   <input
+    onChange={(e) => setInput3(e.target.value)}
     type="text"
     placeholder="RERE56ER62D8A4ED8A1ED5F"
     style={{
